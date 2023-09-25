@@ -1,0 +1,48 @@
+
+clear
+clc
+
+%% CONTROL ALGORITHMS
+% Si procede con l'esecuzione degli schemi Simulink realizzanti gli
+% algoritmi di controllo robusto, adattativo e ID nello spazio operativo
+
+run("TRAJ.m");
+
+%% Controllo robusto
+
+sim("CTRL_RBST.slx");
+
+for i=1:length(T1)
+
+    errxe_rbst(:,i)=ans.ERRXE_RBST.signals.values(:,1,i);
+    xe_rbst(:,i)=ans.XE_RBST.signals.values(:,1,i);
+    errq_rbst(:,i)=ans.ERRQ_RBST.signals.values(i,:);
+    errqd_rbst(:,i)=ans.ERRQD_RBST.signals.values(i,:);
+    u_rbst(:,i)=ans.U_RBST.signals.values(:,1,i);
+
+end
+
+figure
+plot(T1,errxe_rbst(1,:),'r');
+hold on
+plot(T1,errxe_rbst(2,:),'g');
+hold on
+plot(T1,errxe_rbst(3,:),'b');
+hold on
+plot(T1,errxe_rbst(4,:),'m');
+xlabel('t [s]');
+legend('e_x','e_y','e_z','e_p_s_i');
+grid
+
+figure
+plot3(xe_rbst(1,:),xe_rbst(2,:),xe_rbst(3,:),'r-');
+hold on
+plot3(Poses(1,1),Poses(1,2),Poses(1,3),'g.','MarkerSize',20)
+for i=2:length(Poses)-1
+    plot3(Poses(i,1),Poses(i,2),Poses(i,3),'r.','MarkerSize',20);
+end
+axis equal
+grid on
+xlabel('x[m]')
+ylabel('y[m]')
+zlabel('z[m]')
